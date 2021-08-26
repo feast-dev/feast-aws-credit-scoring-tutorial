@@ -1,0 +1,7 @@
+*.bin
+infra/*.tfvars.json
+**__pycache__**
+.idea/
+*.terraform/
+*.tfstate*
+*.terraform*
