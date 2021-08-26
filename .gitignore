@@ -1,3 +1,5 @@
+feature_repo/registry.db
+feature_repo/online_store.db
 *.bin
 infra/*.tfvars.json
 **__pycache__**

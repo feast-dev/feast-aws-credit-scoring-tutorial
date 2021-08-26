@@ -1,5 +1,5 @@
 project: repo
-registry: data/registry.db
+registry: registry.db
 provider: local
 online_store:
-    path: data/online_store.db
+    path: online_store.db
