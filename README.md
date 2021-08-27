@@ -71,7 +71,7 @@ which should print out results by running
 aws redshift-data get-statement-result --id [SET YOUR STATEMENT ID HERE]
 ```
 
-Return to the root of the credit scoring repo
+Return to the root of the credit scoring repository
 ```
 cd ..
 ```
@@ -96,6 +96,7 @@ Since we don't need to `init` a new repository, all we have to do is configure t
 
 Deploy the feature store by running `apply` from within the `feature_repo/` folder
 ```
+cd feature_repo/
 feast apply
 ```
 ```
@@ -110,6 +111,11 @@ latest feature values from a data source into the online store.
 ```
 CURRENT_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S")
 feast materialize-incremental $CURRENT_TIME
+```
+
+Return to the root of the repository
+```
+cd ..
 ```
 
 ## Train and test the model
