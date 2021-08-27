@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from feast import Entity, Feature, FeatureView, FileSource, ValueType
+from feast import Entity, Feature, FeatureView, RedshiftSource, ValueType
 
 zipcode = Entity(name="zipcode", value_type=ValueType.INT64)
 
@@ -16,8 +16,8 @@ zipcode_features = FeatureView(
         Feature(name="population", dtype=ValueType.INT64),
         Feature(name="total_wages", dtype=ValueType.INT64),
     ],
-    batch_source=FileSource(
-        path="data/zipcode_table.parquet",
+    batch_source=RedshiftSource(
+        query="SELECT * FROM spectrum.zipcode_features",
         event_timestamp_column="event_timestamp",
         created_timestamp_column="created_timestamp",
     ),
