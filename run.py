@@ -3,10 +3,7 @@ import pandas as pd
 
 from credit_model import CreditScoringModel
 
-# Get historic loan data from S3
-# s3 = boto3.client("s3").download_file(
-#     "my-feast-project-bucket", "loan_features/table.parquet", "loan_table.parquet"
-# )
+# Get historic loan data
 loans = pd.read_parquet("data/loan_table.parquet")
 
 # Create model
