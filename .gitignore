@@ -7,3 +7,4 @@ infra/*.tfvars.json
 *.terraform/
 *.tfstate*
 *.terraform*
+generate_data.py
