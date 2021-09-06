@@ -4,8 +4,8 @@
 
 This tutorial demonstrates the use of Feast as part of a real-time credit scoring application.
 * The primary training dataset is a loan table. This table contains historic loan data with accompanying features. The dataset also contains a target variable, namely whether a user has defaulted on their loan.
-* Feast is used during training to enrich the loan table with zipcode related features from an S3 table. The S3 table is queried through Redshift.
-* Feast is also used to serve the latest zipcode related features for online credit scoring using DynamoDB.
+* Feast is used during training to enrich the loan table with zipcode and credit history features from a S3 files. The S3 files are queried through Redshift.
+* Feast is also used to serve the latest zipcode and credit history features for online credit scoring using DynamoDB.
 
 ## Requirements
 
@@ -17,8 +17,8 @@ This tutorial demonstrates the use of Feast as part of a real-time credit scorin
 ### Setting up Redshift and S3
 
 First we will set up your data infrastructure to simulate a production environment. We will deploy Redshift, an S3 
-bucket containing our zipcode feature parquet file, IAM roles and policies for Redshift to access S3, and create a 
-Redshift table that can query the parquet file. 
+bucket containing our zipcode and credit history parquet files, IAM roles and policies for Redshift to access S3, and create a 
+Redshift table that can query the parquet files. 
 
 Initialize Terraform
 ```
@@ -40,7 +40,8 @@ Once your infrastructure is deployed, you should see the following outputs from 
 ```
 redshift_cluster_identifier = "my-feast-project-redshift-cluster"
 redshift_spectrum_arn = "arn:aws:iam::<Account>:role/s3_spectrum_role"
-redshift_table = "zipcode_features"
+credit_history_table = "credit_history"
+zipcode_features_table = "zipcode_features"
 ```
 
 Next we create a mapping from the Redshift cluster to the external catalog
@@ -100,8 +101,11 @@ cd feature_repo/
 feast apply
 ```
 ```
+Registered entity dob_ssn
 Registered entity zipcode
+Registered feature view credit_history
 Registered feature view zipcode_features
+Deploying infrastructure for credit_history
 Deploying infrastructure for zipcode_features
 ```
 
@@ -120,8 +124,8 @@ cd ..
 
 ## Train and test the model
 
-Finally, we train the model using a combination of loan data from S3 and zipcode features from Redshift
-(which in turn queries S3), and then we test online inference by reading zipcode features from DynamoDB 
+Finally, we train the model using a combination of loan data from S3 and our zipcode and credit history features from Redshift
+(which in turn queries S3), and then we test online inference by reading those same features from DynamoDB 
 
 ```
 python run.py
@@ -131,3 +135,4 @@ The script should then output the result of a single loan application
 loan rejected!
 ```
 
+## Train and test the model

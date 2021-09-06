@@ -3,21 +3,20 @@ import pandas as pd
 
 from credit_model import CreditScoringModel
 
-# Get historic loan data from S3
-s3 = boto3.client("s3").download_file(
-    "my-feast-project-bucket", "loan_features/table.parquet", "loan_table.parquet"
-)
-loans = pd.read_parquet("loan_table.parquet")
+# Get historic loan data
+loans = pd.read_parquet("data/loan_table.parquet")
 
 # Create model
 model = CreditScoringModel()
 
-# Train model (using Redshift for zipcode features)
-model.train(loans)
+# Train model (using Redshift for zipcode and credit history features)
+if not model.is_model_trained():
+    model.train(loans)
 
-# Make online prediction (using DynamoDB for zipcode features)
+# Make online prediction (using DynamoDB for retrieving online features)
 loan_request = {
     "zipcode": [76104],
+    "dob_ssn": ["19632106_4278"],
     "person_age": [133],
     "person_income": [59000],
     "person_home_ownership": ["RENT"],

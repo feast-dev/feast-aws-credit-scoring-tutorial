@@ -1,6 +1,6 @@
 variable "project_name" {
   type        = string
-  default     = "my-feast-project"
+  default     = "my-feast-project-aws"
   description = "The project identifier is used to uniquely namespace resources"
 }
 

@@ -10,6 +10,12 @@ resource "aws_s3_bucket_object" "zipcode_features_file_upload" {
   source = "${path.module}/../data/zipcode_table.parquet"
 }
 
+resource "aws_s3_bucket_object" "credit_history_file_upload" {
+  bucket = aws_s3_bucket.feast_bucket.bucket
+  key    = "credit_history/table.parquet"
+  source = "${path.module}/../data/credit_history.parquet"
+}
+
 resource "aws_s3_bucket_object" "loan_features_file_upload" {
   bucket = aws_s3_bucket.feast_bucket.bucket
   key    = "loan_features/table.parquet"
@@ -89,7 +95,7 @@ resource "aws_redshift_cluster" "feast_redshift_cluster" {
   skip_final_snapshot = true
 }
 
-resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
+resource "aws_glue_catalog_table" "zipcode_features_table" {
   name          = "zipcode_features"
   database_name = var.database_name
 
@@ -141,6 +147,82 @@ resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
     }
     columns {
       name = "total_wages"
+      type = "BIGINT"
+    }
+    columns {
+      name = "event_timestamp"
+      type = "timestamp"
+    }
+    columns {
+      name = "created_timestamp"
+      type = "timestamp"
+    }
+  }
+}
+
+resource "aws_glue_catalog_table" "credit_history_table" {
+  name          = "credit_history"
+  database_name = var.database_name
+
+  table_type = "EXTERNAL_TABLE"
+
+  parameters = {
+    EXTERNAL              = "TRUE"
+    "parquet.compression" = "SNAPPY"
+  }
+
+  storage_descriptor {
+    location      = "s3://${aws_s3_bucket.feast_bucket.bucket}/credit_history/"
+    input_format  = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
+    output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
+
+    ser_de_info {
+      name                  = "my-stream"
+      serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
+
+      parameters = {
+        "serialization.format" = 1
+      }
+    }
+    columns {
+      name = "dob_ssn"
+      type = "VARCHAR(13)"
+    }
+
+    columns {
+      name = "credit_card_due"
+      type = "BIGINT"
+    }
+    columns {
+      name = "mortgage_due"
+      type = "BIGINT"
+    }
+    columns {
+      name = "student_loan_due"
+      type = "BIGINT"
+    }
+    columns {
+      name = "vehicle_loan_due"
+      type = "BIGINT"
+    }
+    columns {
+      name = "hard_pulls"
+      type = "BIGINT"
+    }
+    columns {
+      name = "missed_payments_2y"
+      type = "BIGINT"
+    }
+    columns {
+      name = "missed_payments_1y"
+      type = "BIGINT"
+    }
+    columns {
+      name = "missed_payments_6m"
+      type = "BIGINT"
+    }
+    columns {
+      name = "bankruptcies"
       type = "BIGINT"
     }
     columns {
