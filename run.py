@@ -16,7 +16,7 @@ if not model.is_model_trained():
 # Make online prediction (using DynamoDB for retrieving online features)
 loan_request = {
     "zipcode": [76104],
-    "dob_ssn": ["19632106_4278"],
+    "dob_ssn": ["19630621_4278"],
     "person_age": [133],
     "person_income": [59000],
     "person_home_ownership": ["RENT"],

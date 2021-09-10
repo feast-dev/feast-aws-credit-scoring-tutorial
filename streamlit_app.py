@@ -22,7 +22,7 @@ def get_loan_request():
     ssn_last_four = st.sidebar.text_input(
         "Last four digits of social security number", "3643"
     )
-    dob_ssn = f"{date_of_birth.strftime('%Y%d%m')}_{str(ssn_last_four)}"
+    dob_ssn = f"{date_of_birth.strftime('%Y%m%d')}_{str(ssn_last_four)}"
     age = st.sidebar.slider("Age", 0, 130, 25)
     income = st.sidebar.slider("Yearly Income", 0, 1000000, 120000)
     person_home_ownership = st.sidebar.selectbox(
