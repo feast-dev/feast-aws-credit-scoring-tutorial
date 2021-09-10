@@ -1,4 +1,4 @@
- project: credit_scoring_aws
+project: credit_scoring_aws
 registry: registry.db
 provider: aws
 online_store:
