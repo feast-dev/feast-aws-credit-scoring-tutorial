@@ -137,4 +137,14 @@ The script should then output the result of a single loan application
 loan rejected!
 ```
 
-## Train and test the model
+## Interactive demo (using Streamlit)
+
+Once the credit scoring model has been trained it can be used for interactive loan applications using Streamlit:
+
+Simply start the Streamlit application
+```
+streamlit run streamlit_app.py
+```
+Then navigate to the URL on which Streamlit is being served. You should see a user interface through which loan applications can be made:
+
+![Streamlit Loan Application](streamlit.png)
