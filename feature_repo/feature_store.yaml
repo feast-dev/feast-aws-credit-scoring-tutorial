@@ -3,12 +3,12 @@ registry: registry.db
 provider: aws
 online_store:
     type: dynamodb
-    region: us-west-2
+    region: ${TF_VAR_region}
 offline_store:
     type: redshift
-    cluster_id: [SET YOUR CLUSTER ID]
-    region: us-west-2
+    cluster_id: ${tf_redshift_cluster_identifier}
+    region: ${TF_VAR_region}
     user: admin
     database: dev
-    s3_staging_location: [SET YOUR BUCKET]
-    iam_role: [SET YOUR ARN]
+    s3_staging_location: s3://${TF_VAR_project_name}-bucket
+    iam_role: ${tf_redshift_spectrum_arn}

@@ -8,3 +8,6 @@ infra/*.tfvars.json
 *.tfstate*
 *.terraform*
 generate_data.py
+
+/.direnv
+/.envrc

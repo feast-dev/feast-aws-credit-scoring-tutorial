@@ -95,6 +95,10 @@ resource "aws_redshift_cluster" "feast_redshift_cluster" {
   skip_final_snapshot = true
 }
 
+resource "aws_glue_catalog_database" "glue_db" {
+  name = var.database_name
+}
+
 resource "aws_glue_catalog_table" "zipcode_features_table" {
   name          = "zipcode_features"
   database_name = var.database_name
@@ -158,6 +162,10 @@ resource "aws_glue_catalog_table" "zipcode_features_table" {
       type = "timestamp"
     }
   }
+  depends_on = [
+    resource.aws_glue_catalog_database.glue_db
+  ]
+
 }
 
 resource "aws_glue_catalog_table" "credit_history_table" {
@@ -234,4 +242,8 @@ resource "aws_glue_catalog_table" "credit_history_table" {
       type = "timestamp"
     }
   }
+  depends_on = [
+    resource.aws_glue_catalog_database.glue_db
+  ]
+
 }
