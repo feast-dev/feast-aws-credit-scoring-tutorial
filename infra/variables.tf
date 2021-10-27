@@ -1,3 +1,9 @@
+variable "region" {
+  type        = string
+  default     = "us-west-2"
+  description = "AWS region where to provision services"
+}
+
 variable "project_name" {
   type        = string
   default     = "my-feast-project-aws"

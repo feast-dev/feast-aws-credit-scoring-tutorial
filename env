@@ -1,0 +1,4 @@
+export tf_redshift_spectrum_arn=$(terraform output -state=infra/terraform.tfstate -raw redshift_spectrum_arn)
+export tf_redshift_cluster_identifier=$(terraform output -state=infra/terraform.tfstate -raw redshift_cluster_identifier)
+export tf_credit_history_table=$(terraform output -state=infra/terraform.tfstate -raw credit_history_table)
+export tf_zipcode_features_table=$(terraform output -state=infra/terraform.tfstate -raw zipcode_features_table)

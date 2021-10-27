@@ -18,9 +18,9 @@ This tutorial demonstrates the use of Feast as part of a real-time credit scorin
 
 ### Setting up Redshift and S3
 
-First we will set up your data infrastructure to simulate a production environment. We will deploy Redshift, an S3 
-bucket containing our zipcode and credit history parquet files, IAM roles and policies for Redshift to access S3, and create a 
-Redshift table that can query the parquet files. 
+First we will set up your data infrastructure to simulate a production environment. We will deploy Redshift, an S3
+bucket containing our zipcode and credit history parquet files, IAM roles and policies for Redshift to access S3, and create a
+Redshift table that can query the parquet files.
 
 Initialize Terraform
 ```
@@ -28,14 +28,21 @@ cd infra
 terraform init
 ```
 
+Set Terraform variables (used also in feature store config)
+```
+export TF_VAR_region="us-west-2"
+export TF_VAR_project_name="your-project-name"
+export TF_VAR_admin_password="$(openssl rand -base64 32)"
+```
+
 Make sure the Terraform plan looks good
 ```
-terraform plan -var="admin_password=thisISyourPassword1"
+terraform plan
 ```
 
 Deploy your infrastructure
 ```
-terraform apply -var="admin_password=thisISyourPassword1"
+terraform apply
 ```
 
 Once your infrastructure is deployed, you should see the following outputs from Terraform
@@ -46,28 +53,34 @@ credit_history_table = "credit_history"
 zipcode_features_table = "zipcode_features"
 ```
 
+To have these outputs in env variables, you can source the `env` script
+```
+(cd .. && source env)
+```
+
 Next we create a mapping from the Redshift cluster to the external catalog
 ```
 aws redshift-data execute-statement \
-    --region us-west-2 \
-    --cluster-identifier [SET YOUR redshift_cluster_identifier HERE] \
+    --region "${TF_VAR_region}" \
+    --cluster-identifier "${tf_redshift_cluster_identifier}" \
     --db-user admin \
-    --database dev --sql "create external schema spectrum from data catalog database 'dev' iam_role \
-    '[SET YOUR redshift_spectrum_arn here]' create external database if not exists;"
+    --database dev \
+    --sql "create external schema spectrum from data catalog database 'dev' iam_role '${tf_redshift_spectrum_arn}' create external database if not exists;"
 ```
 
 To see whether the command was successful, please run the following command (substitute your statement id)
 ```
 aws redshift-data describe-statement --id [SET YOUR STATEMENT ID HERE]
-``` 
+```
 
 You should now be able to query actual zipcode features by executing the following statement
 ```
 aws redshift-data execute-statement \
-    --region us-west-2 \
-    --cluster-identifier [SET YOUR redshift_cluster_identifier HERE] \
+    --region "${TF_VAR_region}" \
+    --cluster-identifier "${tf_redshift_cluster_identifier}" \
     --db-user admin \
-    --database dev --sql "SELECT * from spectrum.zipcode_features LIMIT 1;"
+    --database dev \
+    --sql "SELECT * from spectrum.zipcode_features LIMIT 1;"
 ```
 which should print out results by running
 ```
@@ -84,7 +97,7 @@ cd ..
 Install Feast using pip
 
 ```
-pip install feast
+pip install feast[aws]
 ```
 
 We have already set up a feature repository in [feature_repo/](feature_repo/). It isn't necessary to create a new
@@ -93,7 +106,7 @@ feature repository, but it can be done using the following command
 feast init -t aws feature_repo # Command only shown for reference.
 ```
 
-Since we don't need to `init` a new repository, all we have to do is configure the 
+Since we don't need to `init` a new repository, all we have to do is configure the
 [feature_store.yaml/](feature_repo/feature_store.yaml) in the feature repository. Please set the fields under
 `offline_store` to the configuration you have received when deploying your Redshift cluster and S3 bucket.
 
@@ -127,7 +140,7 @@ cd ..
 ## Train and test the model
 
 Finally, we train the model using a combination of loan data from S3 and our zipcode and credit history features from Redshift
-(which in turn queries S3), and then we test online inference by reading those same features from DynamoDB 
+(which in turn queries S3), and then we test online inference by reading those same features from DynamoDB
 
 ```
 python run.py
