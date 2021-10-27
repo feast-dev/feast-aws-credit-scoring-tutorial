@@ -61,11 +61,11 @@ To have these outputs in env variables, you can source the `env` script
 Next we create a mapping from the Redshift cluster to the external catalog
 ```
 aws redshift-data execute-statement \
-	--region "${TF_VAR_region}" \
-	--cluster-identifier "${tf_redshift_cluster_identifier}" \
-	--db-user admin \
-	--database dev \
-	--sql "create external schema spectrum from data catalog database 'dev' iam_role '${tf_redshift_spectrum_arn}' create external database if not exists;"
+    --region "${TF_VAR_region}" \
+    --cluster-identifier "${tf_redshift_cluster_identifier}" \
+    --db-user admin \
+    --database dev \
+    --sql "create external schema spectrum from data catalog database 'dev' iam_role '${tf_redshift_spectrum_arn}' create external database if not exists;"
 ```
 
 To see whether the command was successful, please run the following command (substitute your statement id)
@@ -77,7 +77,7 @@ You should now be able to query actual zipcode features by executing the followi
 ```
 aws redshift-data execute-statement \
     --region "${TF_VAR_region}" \
-	--cluster-identifier "${tf_redshift_cluster_identifier}" \
+    --cluster-identifier "${tf_redshift_cluster_identifier}" \
     --db-user admin \
     --database dev \
     --sql "SELECT * from spectrum.zipcode_features LIMIT 1;"
